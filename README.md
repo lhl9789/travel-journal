@@ -1,36 +1,42 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 여행의 모든 것 (TravelPocket)
 
-## Getting Started
+여행 중 있었던 모든 것(경비, 일정, 기억)을 한 곳에 기록하고 관리하는 여행 가계부 서비스입니다.
 
-First, run the development server:
+## 프로젝트 구성
+
+이 저장소는 두 개의 프로젝트로 구성되어 있습니다.
+
+- **웹 (루트 디렉토리)**: Next.js 기반 CMS/소개 사이트
+- **모바일 (`mobile/`)**: Expo(React Native) 기반 TravelPocket 모바일 앱 — 자세한 기획은 [`docs/PRD.md`](./docs/PRD.md) 참고
+
+## 웹 프로젝트 시작하기
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+[http://localhost:3000](http://localhost:3000)에서 결과를 확인할 수 있습니다.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+`app/page.tsx`를 수정하면 페이지가 자동으로 갱신됩니다. [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts)로 [Geist](https://vercel.com/font) 폰트를 최적화하여 로드합니다.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 기술 스택
 
-## Learn More
+- Next.js (App Router), TypeScript
+- Tailwind CSS, shadcn/ui
+- TanStack Query, TanStack Table
+- React Hook Form + Zod
 
-To learn more about Next.js, take a look at the following resources:
+## 모바일 프로젝트 시작하기
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+cd mobile
+npm install
+npx expo start
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+자세한 내용은 [`mobile/README.md`](./mobile/README.md)와 [`docs/PRD.md`](./docs/PRD.md)를 참고하세요.
 
-## Deploy on Vercel
+## 문서
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- [PRD (제품 요구사항 정의서)](./docs/PRD.md)
