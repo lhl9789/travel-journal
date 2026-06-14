@@ -1,98 +1,158 @@
-import * as Device from 'expo-device';
-import { Platform, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useFocusEffect, useRouter } from 'expo-router';
+import { SymbolView } from 'expo-symbols';
+import { useSQLiteContext } from 'expo-sqlite';
+import { useCallback, useState } from 'react';
+import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { AnimatedIcon } from '@/components/animated-icon';
-import { HintRow } from '@/components/hint-row';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { WebBadge } from '@/components/web-badge';
+import { TripCard } from '@/components/trip/trip-card';
 import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+import { listTrips, TripWithDestinations } from '@/data/trips';
+import { useTheme } from '@/hooks/use-theme';
 
-function getDevMenuHint() {
-  if (Platform.OS === 'web') {
-    return <ThemedText type="small">use browser devtools</ThemedText>;
-  }
-  if (Device.isDevice) {
-    return (
-      <ThemedText type="small">
-        shake device or press <ThemedText type="code">m</ThemedText> in terminal
-      </ThemedText>
-    );
-  }
-  const shortcut = Platform.OS === 'android' ? 'cmd+m (or ctrl+m)' : 'cmd+d';
+export default function HomeScreen() {
+  const db = useSQLiteContext();
+  const router = useRouter();
+  const theme = useTheme();
+  const insets = useSafeAreaInsets();
+  const [trips, setTrips] = useState<TripWithDestinations[]>([]);
+
+  useFocusEffect(
+    useCallback(() => {
+      listTrips(db).then(setTrips);
+    }, [db]),
+  );
+
+  const bottomPadding = insets.bottom + BottomTabInset + Spacing.three;
+
   return (
-    <ThemedText type="small">
-      press <ThemedText type="code">{shortcut}</ThemedText>
-    </ThemedText>
+    <ThemedView style={styles.container}>
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}>
+        <View style={[styles.content, { paddingTop: insets.top + Spacing.three }]}>
+          <ThemedText style={styles.heading}>
+            여행 <ThemedText themeColor="textSecondary" style={styles.heading}>{trips.length}</ThemedText>
+          </ThemedText>
+
+          {trips.length === 0 ? (
+            <EmptyState />
+          ) : (
+            <View style={styles.list}>
+              <ThemedText type="smallBold" themeColor="textSecondary">
+                다가오는 여행 {trips.length}
+              </ThemedText>
+              {trips.map((trip) => (
+                <TripCard key={trip.id} trip={trip} />
+              ))}
+            </View>
+          )}
+        </View>
+      </ScrollView>
+
+      <View style={[styles.footer, { paddingBottom: bottomPadding }]}>
+        <View style={styles.footerContent}>
+          <Pressable
+            onPress={() => router.push('/trip/new')}
+            style={({ pressed }) => [
+              styles.cta,
+              { backgroundColor: theme.primary },
+              pressed && styles.pressed,
+            ]}>
+            <SymbolView
+              name={{ ios: 'airplane', android: 'flight', web: 'flight' }}
+              tintColor={theme.onPrimary}
+              size={18}
+            />
+            <ThemedText type="smallBold" themeColor="onPrimary">
+              새로운 여행 만들기
+            </ThemedText>
+          </Pressable>
+        </View>
+      </View>
+    </ThemedView>
   );
 }
 
-export default function HomeScreen() {
+function EmptyState() {
+  const theme = useTheme();
+
   return (
-    <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
-        <ThemedView style={styles.heroSection}>
-          <AnimatedIcon />
-          <ThemedText type="title" style={styles.title}>
-            Welcome to&nbsp;Expo
-          </ThemedText>
-        </ThemedView>
-
-        <ThemedText type="code" style={styles.code}>
-          get started
-        </ThemedText>
-
-        <ThemedView type="backgroundElement" style={styles.stepContainer}>
-          <HintRow
-            title="Try editing"
-            hint={<ThemedText type="code">src/app/index.tsx</ThemedText>}
-          />
-          <HintRow title="Dev tools" hint={getDevMenuHint()} />
-          <HintRow
-            title="Fresh start"
-            hint={<ThemedText type="code">npm run reset-project</ThemedText>}
-          />
-        </ThemedView>
-
-        {Platform.OS === 'web' && <WebBadge />}
-      </SafeAreaView>
-    </ThemedView>
+    <View style={styles.emptyState}>
+      <SymbolView
+        name={{ ios: 'airplane', android: 'flight_takeoff', web: 'flight_takeoff' }}
+        tintColor={theme.primary}
+        size={48}
+      />
+      <ThemedText style={styles.emptyTitle}>첫 번째 여행을 시작해 보세요!</ThemedText>
+      <ThemedText type="small" themeColor="textSecondary" style={styles.emptySubtitle}>
+        지출을 손쉽게 기록하고 관리할 수 있어요
+      </ThemedText>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    flexDirection: 'row',
   },
-  safeArea: {
+  scrollView: {
     flex: 1,
-    paddingHorizontal: Spacing.four,
+  },
+  scrollContent: {
+    flexGrow: 1,
     alignItems: 'center',
-    gap: Spacing.three,
-    paddingBottom: BottomTabInset + Spacing.three,
+  },
+  content: {
+    flex: 1,
+    width: '100%',
     maxWidth: MaxContentWidth,
-  },
-  heroSection: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
     paddingHorizontal: Spacing.four,
     gap: Spacing.four,
   },
-  title: {
+  heading: {
+    fontSize: 22,
+    fontWeight: '700',
+  },
+  list: {
+    gap: Spacing.three,
+  },
+  emptyState: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: Spacing.two,
+    paddingVertical: Spacing.six,
+  },
+  emptyTitle: {
+    fontSize: 18,
+    fontWeight: '700',
     textAlign: 'center',
   },
-  code: {
-    textTransform: 'uppercase',
+  emptySubtitle: {
+    textAlign: 'center',
   },
-  stepContainer: {
-    gap: Spacing.three,
-    alignSelf: 'stretch',
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.four,
-    borderRadius: Spacing.four,
+  footer: {
+    width: '100%',
+    alignItems: 'center',
+    paddingHorizontal: Spacing.four,
+    paddingTop: Spacing.two,
+  },
+  footerContent: {
+    width: '100%',
+    maxWidth: MaxContentWidth,
+  },
+  cta: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: Spacing.two,
+    borderRadius: Spacing.five,
+    paddingVertical: Spacing.three,
+  },
+  pressed: {
+    opacity: 0.8,
   },
 });
