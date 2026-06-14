@@ -1,56 +1,57 @@
-# Welcome to your Expo app 👋
+# TravelPocket Mobile
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+여행 중 지출/예산/통계를 기록·관리하는 iOS 앱입니다. (참조 앱: 트라비포켓)
 
-## Get started
+자세한 기능 정의와 데이터 모델은 [`docs/PRD.md`](../docs/PRD.md)를 참고하세요.
 
-1. Install dependencies
+## 주요 기능
+
+- 여행 생성 및 목적지 구간(국가/기간) 관리
+- 카테고리별 지출 기록 (현금/카드, 개인예산/공동예산, 다중 통화)
+- 예산 포켓 충전 및 통화·결제수단별 잔액/평균환율 관리
+- 카테고리/일별/통화별 통계
+- 카테고리, 자국 화폐, 기본 결제수단, 환율 설정
+
+## 기술 스택
+
+- Expo (React Native) + Expo Router
+- TypeScript
+- expo-sqlite (로컬 DB) + AsyncStorage (설정 저장)
+- @gorhom/bottom-sheet
+- react-native-gifted-charts + react-native-svg
+- date-fns
+
+데이터는 모두 기기 로컬에 저장되며 별도의 인증/서버가 없습니다.
+
+## 시작하기
+
+1. 의존성 설치
 
    ```bash
    npm install
    ```
 
-2. Start the app
+2. 앱 실행
 
    ```bash
    npx expo start
    ```
 
-In the output, you'll find options to open the app in a
+출력된 옵션을 통해 [개발 빌드](https://docs.expo.dev/develop/development-builds/introduction/), [Android 에뮬레이터](https://docs.expo.dev/workflow/android-studio-emulator/), [iOS 시뮬레이터](https://docs.expo.dev/workflow/ios-simulator/), [Expo Go](https://expo.dev/go) 중 원하는 환경에서 앱을 열 수 있습니다.
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## 디렉토리 구조
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
+```
+mobile/
+├── app/                # 화면 (Expo Router 파일 기반 라우팅)
+└── src/
+    ├── components/     # UI / 도메인별 컴포넌트
+    ├── data/           # 로컬 DB 접근 (expo-sqlite)
+    ├── types/           # 데이터 모델 타입
+    ├── theme/           # 색상, 스페이싱, 타이포그래피
+    ├── constants/       # 카테고리, 국가, 통화 등 상수
+    ├── hooks/
+    └── utils/
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-### Other setup steps
-
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+자세한 구조와 구현 Phase 로드맵은 [`docs/PRD.md`](../docs/PRD.md)의 5장, 6장을 참고하세요.
