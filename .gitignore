@@ -48,3 +48,6 @@ hook-test.txt
 
 # playwright mcp logs
 .playwright-mcp/
+
+# 참조용 화면 디자인 시안 (루트 디렉토리)
+/*.png
